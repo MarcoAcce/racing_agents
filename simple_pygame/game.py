@@ -25,6 +25,7 @@ walls = display.get_rect().inflate(-10, -10)
 
 if __name__ == "__main__":
     P1 = Player()
+    P1.set_position(window_width/2, window_height - 50)
     while True:
         for event in pygame.event.get():
             if event.type == pg.QUIT:
@@ -37,7 +38,7 @@ if __name__ == "__main__":
             print("hit the wall")
             P1.reset_speed()
             P1.reset_angle()
-            P1.reset_position()
+            P1.set_position(window_width/2, window_height - 150)
         P1.draw(display)
         pygame.display.update()
         FPS.tick(60)

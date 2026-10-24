@@ -45,8 +45,8 @@ class Player(pygame.sprite.Sprite):
             self.angle = self.angle + 10
         self.movement()
 
-    def reset_position(self):
-        self.rect.center = (160, 520)
+    def set_position(self, x = 160, y = 500):
+        self.rect.center = (x, y)
 
     def reset_speed(self):
         self.speed = 0
