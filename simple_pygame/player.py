@@ -39,10 +39,10 @@ class Player(pygame.sprite.Sprite):
             self.speed = max(self.speed - 1,0)
          
         if pressed_keys[pg.K_LEFT]:
-            self.angle = self.angle - 10
+            self.angle = self.angle - 5
         
         if pressed_keys[pg.K_RIGHT]:
-            self.angle = self.angle + 10
+            self.angle = self.angle + 5
         self.movement()
 
     def set_position(self, x = 160, y = 500):

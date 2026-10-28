@@ -1,8 +1,9 @@
 import sys
-import pygame
 import math
+import pygame
 from pygame import locals as pg
 from player import Player
+from map import EmptyMap
 
 pygame.init()
 
@@ -21,24 +22,24 @@ grey = pygame.Color(128, 128, 128)
 red = pygame.Color(255, 0, 0)      
 
 display.fill(white)
-walls = display.get_rect().inflate(-10, -10)
 
 if __name__ == "__main__":
     P1 = Player()
-    P1.set_position(window_width/2, window_height - 50)
+    track = EmptyMap(display)
+    P1.set_position(*track.get_starting_position())
     while True:
         for event in pygame.event.get():
             if event.type == pg.QUIT:
                 pygame.quit()
                 sys.exit()
         display.fill(grey)
-        pygame.draw.rect(display, red, walls, 2)
+        track.draw(display,red,2)
         P1.update()
-        if not walls.contains(P1.rect):
+        if track.check_collision(P1.rect):
             print("hit the wall")
             P1.reset_speed()
             P1.reset_angle()
-            P1.set_position(window_width/2, window_height - 150)
+            P1.set_position(*track.get_starting_position())
         P1.draw(display)
         pygame.display.update()
         FPS.tick(60)
