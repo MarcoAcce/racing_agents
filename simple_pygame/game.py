@@ -3,7 +3,7 @@ import math
 import pygame
 from pygame import locals as pg
 from player import Player
-from map import EmptyMap
+from map import Map, EmptyMap
 
 pygame.init()
 
@@ -23,10 +23,21 @@ red = pygame.Color(255, 0, 0)
 
 display.fill(white)
 
+black = pygame.Color(0, 0, 0)   
+pygame.font.init()
+myfont = pygame.font.SysFont("monospace", 16)
+
 if __name__ == "__main__":
+    while True:
+        choice = input("Choose a Map (oval, stadium):")
+        if choice in ("oval","stadium"):
+            break
+        print("wrong input")
+
     P1 = Player()
-    track = EmptyMap(display)
+    track = Map(display, choice)
     P1.set_position(*track.get_starting_position())
+    P1.set_angle(track.get_starting_angle())
     while True:
         for event in pygame.event.get():
             if event.type == pg.QUIT:
@@ -35,7 +46,7 @@ if __name__ == "__main__":
         display.fill(grey)
         track.draw(display,red,2)
         P1.update()
-        if track.check_collision(P1.rect):
+        if track.check_collision(P1):
             print("hit the wall")
             P1.reset_speed()
             P1.reset_angle()

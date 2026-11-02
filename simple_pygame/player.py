@@ -2,10 +2,6 @@ import pygame
 import math
 from pygame import locals as pg
 
-ARROW = [(-20, -5), (5, -5), (5, -12), (20, 0), (5, 12), (5, 5), (-20, 5)]  # points right, centered on (0, 0)
-black = pygame.Color(0, 0, 0)   
-pygame.font.init()
-myfont = pygame.font.SysFont("monospace", 16)
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -16,6 +12,7 @@ class Player(pygame.sprite.Sprite):
         self.image = self.original_image
         self.rect = self.image.get_rect()
         self.rect.center = (160, 520)
+        self.mask = pygame.mask.from_surface(self.image)
         self.speed = 0
         self.speed_x, self.speed_y = 0, 0
         self.angle = 0
@@ -26,6 +23,7 @@ class Player(pygame.sprite.Sprite):
         if self.angle < 0:
             self.angle = 360 + self.angle
         self.image = pygame.transform.rotate(self.original_image,-self.angle)
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect(center=self.rect.center)
 
     def movement(self):
@@ -54,6 +52,10 @@ class Player(pygame.sprite.Sprite):
     def set_position(self, x = 160, y = 500):
         self.rect.center = (x, y)
 
+    def set_angle(self,angle=0):
+        self.angle=angle
+        self.rotation
+
     def reset_speed(self):
         self.speed = 0
 
@@ -68,11 +70,3 @@ class Player(pygame.sprite.Sprite):
         surface.blit(angle_text, (5, 30))     
         self.draw_arrow(surface, black)
 
-    def draw_arrow(self, surf, color):
-        if self.speed == 0:
-            return
-        angle_rad = math.radians(self.angle)
-        direction = math.atan2(-math.cos(angle_rad) * self.speed, math.sin(angle_rad) * self.speed)
-        c, s = math.cos(direction), math.sin(direction)
-        points = [(self.rect.centerx + x * c - y * s, self.rect.centery + x * s + y * c) for x, y in ARROW]
-        pygame.draw.polygon(surf, color, points)
