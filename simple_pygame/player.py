@@ -12,18 +12,23 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
 
         image = pygame.image.load('Car.png')
-        self.image = pygame.transform.scale(image, (60, 100))
+        self.original_image = pygame.transform.scale(image, (60, 100))
+        self.image = self.original_image
         self.rect = self.image.get_rect()
         self.rect.center = (160, 520)
         self.speed = 0
         self.speed_x, self.speed_y = 0, 0
         self.angle = 0
 
-    def movement(self):
+    def rotation(self):
         if self.angle >= 360:
             self.angle = self.angle - 360
         if self.angle < 0:
             self.angle = 360 + self.angle
+        self.image = pygame.transform.rotate(self.original_image,-self.angle)
+        self.rect = self.image.get_rect(center=self.rect.center)
+
+    def movement(self):
         angle_rad = math.radians(self.angle)
         hor = math.sin(angle_rad)*self.speed
         ver = -math.cos(angle_rad)*self.speed
@@ -43,6 +48,7 @@ class Player(pygame.sprite.Sprite):
         
         if pressed_keys[pg.K_RIGHT]:
             self.angle = self.angle + 5
+        self.rotation()
         self.movement()
 
     def set_position(self, x = 160, y = 500):
