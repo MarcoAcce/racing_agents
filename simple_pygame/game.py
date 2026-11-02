@@ -1,9 +1,9 @@
 import sys
-import math
 import pygame
 from pygame import locals as pg
 from player import Player
-from map import Map, EmptyMap
+from map import Map, COLLISION, CHECKPOINT, FINISH
+
 
 pygame.init()
 
@@ -39,19 +39,25 @@ if __name__ == "__main__":
     P1.set_position(*track.get_starting_position())
     P1.set_angle(track.get_starting_angle())
     while True:
+        display.fill(grey)
+        track.draw(display,red,2)
+        track.check_position(P1)
         for event in pygame.event.get():
             if event.type == pg.QUIT:
                 pygame.quit()
                 sys.exit()
-        display.fill(grey)
-        track.draw(display,red,2)
+            if event.type == COLLISION:
+                print("hit the wall")
+                P1.reset_speed()
+                P1.reset_angle()
+                P1.set_position(*track.get_starting_position())
+                P1.set_angle(track.get_starting_angle())
+            if event.type == CHECKPOINT:
+                print("checkpoint!")
+            if event.type == FINISH:
+                print("finish!")
+                P1.reset_speed()
         P1.update()
-        if track.check_collision(P1):
-            print("hit the wall")
-            P1.reset_speed()
-            P1.reset_angle()
-            P1.set_position(*track.get_starting_position())
-            P1.set_angle(track.get_starting_angle())
         P1.draw(display)
         pygame.display.update()
         FPS.tick(60)

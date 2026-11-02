@@ -11,11 +11,13 @@ class Player(pygame.sprite.Sprite):
         self.original_image = pygame.transform.scale(image, (60, 100))
         self.image = self.original_image
         self.rect = self.image.get_rect()
-        self.rect.center = (160, 520)
+        self.x, self.y = 0, 0
+        self.rect.center = (self.x, self.y)
         self.mask = pygame.mask.from_surface(self.image)
         self.speed = 0
-        self.x, self.y = 0, 0
         self.angle = 0
+        self.on_finish = False
+        self.on_checkpoint = False
 
     def rotation(self):
         if self.angle >= 360:

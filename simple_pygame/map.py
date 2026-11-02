@@ -1,47 +1,58 @@
 from dataclasses import dataclass
 import pygame
-from pygame import locals as pg
-import json
 
-grey = pygame.Color(128, 128, 128)  
+COLLISION = pygame.USEREVENT + 1
+CHECKPOINT = pygame.USEREVENT + 2
+FINISH = pygame.USEREVENT + 3
 
 @dataclass 
 class Point:
     x: float = 0
     y: float = 0
-    def __init__(self,ix=0,iy=0):
-        self.x, self.y = ix, iy
 
 @dataclass 
 class Track:
-    filepath: str
+    directory: str
     starting_point: Point
-    starting_angle: int
-    def __init__(self,path,ix=0,iy=0, iangle = 0):
-        self.filepath = path
-        self.starting_point = Point(ix,iy)
-        self.starting_angle = iangle
+    starting_angle: int = 0
 
 maps = { 
-    "oval": Track("./tracks/01_oval.png",880,400, 180),
-    "stadium" : Track("./tracks/02_stadium.png",350,170, 90),
+    "oval": Track("./tracks/oval/", Point(880, 400), 180),
+    "stadium" : Track("./tracks/stadium/", Point(350,170), 90),
  }
 
 class Map():
     def __init__(self, window, map_name = "stadium"):
         self.window = window
         self.name = map_name
-        self.surface = pygame.image.load(maps[self.name].filepath).convert_alpha()
-        self.wall_mask = pygame.mask.from_surface(self.surface)
+        track_dir = maps[self.name].directory
+        self.track_surface = pygame.image.load(track_dir + "track.png").convert_alpha()
+        self.wall_mask = pygame.mask.from_surface(self.track_surface)
+        self.checkpoint_surface = pygame.image.load(track_dir + "checkpoints.png").convert_alpha()
+        self.checkpoint_mask = pygame.mask.from_surface(self.checkpoint_surface)
+        self.finish_surface = pygame.image.load(track_dir + "finish.png").convert_alpha()
+        self.finish_mask = pygame.mask.from_surface(self.finish_surface)
+
     def get_starting_position(self):
         start = maps[self.name].starting_point
         return start.x, start.y
     def get_starting_angle(self):
         return maps[self.name].starting_angle
-    def check_collision(self, player):
-        return self.wall_mask.overlap(player.mask, player.rect.topleft) is not None
+    def check_position(self, player):
+        if self.wall_mask.overlap(player.mask, player.rect.topleft) is not None:
+            pygame.event.post(pygame.event.Event(COLLISION))
+        hit = self.checkpoint_mask.overlap(player.mask, player.rect.topleft) is not None
+        if hit and not player.on_checkpoint:
+            pygame.event.post(pygame.event.Event(CHECKPOINT))
+        player.on_checkpoint = hit
+        hit = self.finish_mask.overlap(player.mask, player.rect.topleft) is not None
+        if hit and not player.on_finish:
+            pygame.event.post(pygame.event.Event(FINISH))
+        player.on_finish = hit
     def draw(self, display, color, thickness):
-        display.blit(self.surface, (0, 0))
+        display.blit(self.track_surface, (0, 0))
+        display.blit(self.checkpoint_surface, (0, 0))
+        display.blit(self.finish_surface, (0, 0))
 
 
 class EmptyMap():
