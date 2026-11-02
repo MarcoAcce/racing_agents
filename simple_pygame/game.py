@@ -23,9 +23,9 @@ red = pygame.Color(255, 0, 0)
 
 display.fill(white)
 
-black = pygame.Color(0, 0, 0)   
-pygame.font.init()
-myfont = pygame.font.SysFont("monospace", 16)
+# black = pygame.Color(0, 0, 0)   
+# pygame.font.init()
+# myfont = pygame.font.SysFont("monospace", 16)
 
 if __name__ == "__main__":
     while True:
@@ -51,6 +51,7 @@ if __name__ == "__main__":
             P1.reset_speed()
             P1.reset_angle()
             P1.set_position(*track.get_starting_position())
+            P1.set_angle(track.get_starting_angle())
         P1.draw(display)
         pygame.display.update()
         FPS.tick(60)

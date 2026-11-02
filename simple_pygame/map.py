@@ -23,8 +23,8 @@ class Track:
         self.starting_angle = iangle
 
 maps = { 
-    "oval": Track("./tracks/01_oval.png",880,400, 90),
-    "stadium" : Track("./tracks/02_stadium.png",350,170, 180),
+    "oval": Track("./tracks/01_oval.png",880,400, 180),
+    "stadium" : Track("./tracks/02_stadium.png",350,170, 90),
  }
 
 class Map():
