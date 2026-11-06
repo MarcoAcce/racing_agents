@@ -18,6 +18,7 @@ class Player(pygame.sprite.Sprite):
         self.angle = 0
         self.on_finish = False
         self.on_checkpoint = False
+        self.on_checkpoint = None
 
     def rotation(self):
         if self.angle >= 360:

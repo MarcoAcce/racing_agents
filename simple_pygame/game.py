@@ -53,7 +53,7 @@ if __name__ == "__main__":
                 P1.set_position(*track.get_starting_position())
                 P1.set_angle(track.get_starting_angle())
             if event.type == CHECKPOINT:
-                print("checkpoint!")
+                print(f"checkpoint {event.index +1}!")
             if event.type == FINISH:
                 print("finish!")
                 P1.reset_speed()
