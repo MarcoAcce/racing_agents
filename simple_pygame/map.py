@@ -4,6 +4,7 @@ import pygame
 COLLISION = pygame.USEREVENT + 1
 CHECKPOINT = pygame.USEREVENT + 2
 FINISH = pygame.USEREVENT + 3
+BACKWARDS = pygame.USEREVENT + 4
 
 @dataclass 
 class Point:
@@ -15,6 +16,11 @@ class Track:
     directory: str
     starting_point: Point
     starting_angle: int = 0
+
+@dataclass
+class PlayerStats:
+    on_finish: bool = False
+    on_checkpoint: int = None
 
 maps = { 
     "oval": Track("./tracks/oval/", Point(880, 400), 180),
@@ -45,6 +51,13 @@ class Map():
         self.finish_surface = pygame.image.load(track_dir + "finish.png").convert_alpha()
         self.finish_mask = pygame.mask.from_surface(self.finish_surface)
 
+        self.players_state = {}
+
+    def register_player(self, player):
+        self.players_state[player.id] = PlayerStats()
+    
+    def reset_player_state(self, player_id):
+        self.players_state[player_id] = PlayerStats()
 
     def get_starting_position(self):
         start = maps[self.name].starting_point
@@ -53,28 +66,28 @@ class Map():
     def get_starting_angle(self):
         return maps[self.name].starting_angle
     
-    def check_position(self, player):
-        if()
-        offset = player.rect.topleft
-        if self.wall_mask.overlap(player.mask, offset) is not None:
+    def check_position(self, player_id, player_mask, player_offset):
+        player_state = self.players_state[player_id]
+        offset = player_offset
+        if self.wall_mask.overlap(player_mask, offset) is not None:
             pygame.event.post(pygame.event.Event(COLLISION))
        
-        if self.checkpoint_mask.overlap(player.mask, offset) is not None:
-            if player.on_checkpoint is None:
+        if self.checkpoint_mask.overlap(player_mask, offset) is not None:
+            if player_state.on_checkpoint is None:
                 checkpoint_hit = None 
                 for i, mask in enumerate(self.checkpoint_masks):
-                    if mask.overlap(player.mask, offset) is not None:
+                    if mask.overlap(player_mask, offset) is not None:
                         checkpoint_hit = i
                         break
-                player.on_checkpoint = checkpoint_hit
+                player_state.on_checkpoint = checkpoint_hit
                 pygame.event.post(pygame.event.Event(CHECKPOINT, index=checkpoint_hit))
         else:
-            player.on_checkpoint = None
+            player_state.on_checkpoint = None
 
-        finish_hit = self.finish_mask.overlap(player.mask, offset) is not None
-        if finish_hit and not player.on_finish:
+        finish_hit = self.finish_mask.overlap(player_mask, offset) is not None
+        if finish_hit and not player_state.on_finish:
             pygame.event.post(pygame.event.Event(FINISH))
-        player.on_finish = finish_hit
+        player_state.on_finish = finish_hit
     
     def draw(self, display, color, thickness):
         display.blit(self.track_surface, (0, 0))

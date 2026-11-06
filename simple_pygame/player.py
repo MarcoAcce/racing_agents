@@ -4,7 +4,7 @@ from pygame import locals as pg
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, in_id: int = -1):
         super().__init__()
 
         image = pygame.image.load('Car.png')
@@ -16,9 +16,7 @@ class Player(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
         self.speed = 0
         self.angle = 0
-        self.on_finish = False
-        self.on_checkpoint = False
-        self.on_checkpoint = None
+        self.id: int = in_id
 
     def rotation(self):
         if self.angle >= 360:
