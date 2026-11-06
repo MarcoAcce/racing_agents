@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import pygame
 
 COLLISION = pygame.USEREVENT + 1
@@ -19,6 +19,7 @@ class Track:
 
 @dataclass
 class PlayerStats:
+    passed_checkpoints: list[int] = field(default_factory=list)
     on_finish: bool = False
     on_checkpoint: int = None
 
@@ -69,9 +70,17 @@ class Map():
     def check_position(self, player_id, player_mask, player_offset):
         player_state = self.players_state[player_id]
         offset = player_offset
+
         if self.wall_mask.overlap(player_mask, offset) is not None:
             pygame.event.post(pygame.event.Event(COLLISION))
        
+        finish_hit = self.finish_mask.overlap(player_mask, offset) is not None
+        if finish_hit and not player_state.on_finish:
+            if len(player_state.passed_checkpoints) == len(self.checkpoint_masks):
+                pygame.event.post(pygame.event.Event(FINISH))
+                player_state.passed_checkpoints.clear()
+        player_state.on_finish = finish_hit
+
         if self.checkpoint_mask.overlap(player_mask, offset) is not None:
             if player_state.on_checkpoint is None:
                 checkpoint_hit = None 
@@ -80,14 +89,20 @@ class Map():
                         checkpoint_hit = i
                         break
                 player_state.on_checkpoint = checkpoint_hit
-                pygame.event.post(pygame.event.Event(CHECKPOINT, index=checkpoint_hit))
+                if i not in player_state.passed_checkpoints:
+                    if i==0 or checkpoint_hit - 1 in player_state.passed_checkpoints:
+                        player_state.passed_checkpoints.append(i)
+                        pygame.event.post(pygame.event.Event(CHECKPOINT, index=checkpoint_hit))
+                    else:
+                        pygame.event.post(pygame.event.Event(BACKWARDS, index=checkpoint_hit))
+                else:
+                    if i+1 in player_state.passed_checkpoints:
+                        player_state.passed_checkpoints.remove(i+1)
+                    player_state.passed_checkpoints.remove(i)
+                    pygame.event.post(pygame.event.Event(BACKWARDS, index=checkpoint_hit))
         else:
             player_state.on_checkpoint = None
 
-        finish_hit = self.finish_mask.overlap(player_mask, offset) is not None
-        if finish_hit and not player_state.on_finish:
-            pygame.event.post(pygame.event.Event(FINISH))
-        player_state.on_finish = finish_hit
     
     def draw(self, display, color, thickness):
         display.blit(self.track_surface, (0, 0))

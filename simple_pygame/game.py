@@ -2,7 +2,7 @@ import sys
 import pygame
 from pygame import locals as pg
 from player import Player
-from map import Map, COLLISION, CHECKPOINT, FINISH
+from map import Map, COLLISION, CHECKPOINT, FINISH, BACKWARDS
 
 
 pygame.init()
@@ -56,10 +56,11 @@ if __name__ == "__main__":
                 track.reset_player_state(P1.id)
             if event.type == CHECKPOINT:
                 print(f"checkpoint {event.index +1}!")
+            if event.type == BACKWARDS:
+                print(f"going backwards through {event.index +1}!")
             if event.type == FINISH:
                 print("finish!")
                 P1.reset_speed()
-                #track.reset_player_state(P1.id)
         P1.update()
         P1.draw(display)
         pygame.display.update()
