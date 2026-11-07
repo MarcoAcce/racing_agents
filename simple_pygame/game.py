@@ -39,6 +39,7 @@ if __name__ == "__main__":
     track.register_player(P1)
     P1.set_position(*track.get_starting_position())
     P1.set_angle(track.get_starting_angle())
+
     while True:
         display.fill(grey)
         track.draw(display,red,2)
@@ -63,5 +64,10 @@ if __name__ == "__main__":
                 P1.reset_speed()
         P1.update()
         P1.draw(display)
+
+        ray_collisions = P1.check_rays(track, True, 300)
+        for point in ray_collisions:
+            pygame.draw.line(display, white, P1.rect.center, point, 1)
+            pygame.draw.circle(display, red, point, 3)
         pygame.display.update()
         FPS.tick(60)

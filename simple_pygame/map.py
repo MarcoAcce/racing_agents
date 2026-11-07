@@ -101,6 +101,8 @@ class Map():
         else:
             player_state.on_checkpoint = None
 
+    def is_wall(self, x, y):
+        return self.wall_mask.get_at((x, y)) > 0
     
     def draw(self, display, color, thickness):
         display.blit(self.track_surface, (0, 0))

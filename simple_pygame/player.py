@@ -69,3 +69,28 @@ class Player(pygame.sprite.Sprite):
     def draw(self, surface):
         surface.blit(self.image, self.rect)
 
+    def check_rays(self, track, draw = False, max_length = 300):
+        ray_angles = [-90,-60, -45, -25, -15, -7.5, 0, 7.5, 15, 25, 45, 60, 90]
+        collisions = []
+        rays = []
+        for ray_angle in ray_angles:
+            ray_result = self.check_ray(track, max_length, ray_angle, draw)
+            intensity = 1 - ray_result[0] / max_length
+            rays.append([ray_angle, intensity])     
+            if draw:
+                collisions.append([ray_result[1],ray_result[2]])
+        return collisions
+
+    def check_ray(self, track,  max_length, ray_angle, draw = False,):
+        length = 0
+        x,y = self.rect.center
+
+        while length < max_length and not track.is_wall(x,y):
+            x = int(self.rect.center[0] + math.sin(math.radians(self.angle + ray_angle)) * length)
+            y = int(self.rect.center[1] - math.cos(math.radians(self.angle + ray_angle)) * length)
+            length += 1
+
+        if draw:
+            return length, x, y
+        return length
+
