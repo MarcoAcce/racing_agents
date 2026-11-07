@@ -95,10 +95,8 @@ class Map():
                         pygame.event.post(pygame.event.Event(CHECKPOINT, index=checkpoint_hit))
                     else:
                         pygame.event.post(pygame.event.Event(BACKWARDS, index=checkpoint_hit))
-                else:
-                    if i+1 in player_state.passed_checkpoints:
-                        player_state.passed_checkpoints.remove(i+1)
-                    player_state.passed_checkpoints.remove(i)
+                elif i+1 in player_state.passed_checkpoints:
+                    player_state.passed_checkpoints.remove(i+1)
                     pygame.event.post(pygame.event.Event(BACKWARDS, index=checkpoint_hit))
         else:
             player_state.on_checkpoint = None
