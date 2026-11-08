@@ -1,7 +1,8 @@
 import sys
 import pygame
 from pygame import locals as pg
-from player import Player
+from car import Car
+from ai_player import AICar
 from map import Map, COLLISION, CHECKPOINT, FINISH, BACKWARDS
 
 
@@ -34,7 +35,7 @@ if __name__ == "__main__":
             break
         print("wrong input")
 
-    P1 = Player(1)
+    P1 = AICar(1)
     track = Map(display, choice)
     track.register_player(P1)
     P1.set_position(*track.get_starting_position())
@@ -55,6 +56,7 @@ if __name__ == "__main__":
                 P1.set_position(*track.get_starting_position())
                 P1.set_angle(track.get_starting_angle())
                 track.reset_player_state(P1.id)
+                P1.check_rays(track, False, 300)
             if event.type == CHECKPOINT:
                 print(f"checkpoint {event.index +1}!")
             if event.type == BACKWARDS:
