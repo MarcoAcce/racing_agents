@@ -44,7 +44,10 @@ if __name__ == "__main__":
     while True:
         display.fill(grey)
         track.draw(display,red,2)
+
+        P1.update()
         track.check_position(P1.id, P1.mask, P1.rect.topleft)
+
         for event in pygame.event.get():
             if event.type == pg.QUIT:
                 pygame.quit()
@@ -64,12 +67,12 @@ if __name__ == "__main__":
             if event.type == FINISH:
                 print("finish!")
                 P1.reset_speed()
-        P1.update()
-        P1.draw(display)
 
         ray_collisions = P1.check_rays(track, True, 300)
         for point in ray_collisions:
             pygame.draw.line(display, white, P1.rect.center, point, 1)
             pygame.draw.circle(display, red, point, 3)
+
+        P1.draw(display)
         pygame.display.update()
         FPS.tick(60)
