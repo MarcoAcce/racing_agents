@@ -35,6 +35,7 @@ class Map():
         track_dir = maps[self.name].directory
         self.track_surface = pygame.image.load(track_dir + "track.png").convert_alpha()
         self.wall_mask = pygame.mask.from_surface(self.track_surface)
+        self.map_size = self.wall_mask.get_size()
 
         #combined surface and mask for collective blit and check
         self.checkpoint_surface = pygame.image.load(track_dir + "checkpoints.png").convert_alpha()
@@ -89,6 +90,8 @@ class Map():
                         checkpoint_hit = i
                         break
                 player_state.on_checkpoint = checkpoint_hit
+                if checkpoint_hit is None:
+                    return
                 if checkpoint_hit not in player_state.passed_checkpoints:
                     if checkpoint_hit==0 or checkpoint_hit - 1 in player_state.passed_checkpoints:
                         player_state.passed_checkpoints.append(checkpoint_hit)
@@ -102,11 +105,13 @@ class Map():
             player_state.on_checkpoint = None
 
     def is_wall(self, x, y):
+        if not (0 <= x < self.map_size[0] and 0 <= y < self.map_size[1]):
+            return True # collsion when out of bounds
         return self.wall_mask.get_at((x, y)) > 0
     
     def draw(self, display, color, thickness):
         display.blit(self.track_surface, (0, 0))
-        display.blit(self.checkpoint_surface, (0, 0)) 
+        #display.blit(self.checkpoint_surface, (0, 0)) 
         display.blit(self.finish_surface, (0, 0))
 
 
