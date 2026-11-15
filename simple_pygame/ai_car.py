@@ -1,6 +1,5 @@
 import pygame
 import math
-from pygame import locals as pg
 from .car import Car
 from .colors import red, white
 
@@ -10,11 +9,19 @@ class AICar(Car):
         super().__init__(in_id)
         self.rays = []
         self.ray_points = []
+        self.nex_action = 8
         
-    #def update(self):
-    #    self.apply_controls(self.brain.decision(self.rays, self.speed, self.angle))
-    #    self.rotation()
-    #    self.movement()
+    def update(self):
+        accelerate  = self.nex_action == 0 or self.nex_action == 1 or self.nex_action == 2
+        brake       = self.nex_action == 3 or self.nex_action == 4 or self.nex_action == 5
+        left        = self.nex_action == 0 or self.nex_action == 3 or self.nex_action == 6
+        right       = self.nex_action == 1 or self.nex_action == 4 or self.nex_action == 7
+        self.apply_controls(accelerate, brake, left, right)
+        self.rotation()
+        self.movement()
+    
+    def get_observations(self):
+        return [*self.rays, self.speed/5]
 
     def check_ray(self, track,  max_length, ray_angle):
         length = 0
@@ -30,7 +37,7 @@ class AICar(Car):
 
         return length, x, y
 
-    def check_rays(self, track, draw = False, max_length = 300):
+    def check_rays(self, track, max_length):
         self.rays = []
         self.ray_points = []
         for ray_angle in AICar.ray_angles:

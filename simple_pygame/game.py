@@ -45,10 +45,13 @@ class Game():
 
     def update(self):
         for player in self.players:
+            if isinstance(player, AICar):
+                player.check_rays(self.track, 300)
+                observations = player.get_observations()
+                #actions = ...
+                player.nex_action = action
             player.update()
             self.track.check_position(player.id, player.mask, player.rect.topleft)
-            if isinstance(player, AICar):
-                player.check_rays(self.track, True, 300)
     
     def render(self):
         self.display.fill(grey)
@@ -70,8 +73,6 @@ class Game():
                 player.set_position(*self.track.get_starting_position())
                 player.set_angle(self.track.get_starting_angle())
                 self.track.reset_player_state(event.player_id)
-                if isinstance(player, AICar):
-                    player.check_rays(self.track, False, 300)
             if event.type == CHECKPOINT:
                 print(f"Player {event.player_id}: checkpoint {event.index +1}!")
             if event.type == BACKWARDS:
@@ -81,10 +82,3 @@ class Game():
                 print(f"Player {event.player_id}: finished!")
                 player.reset_speed()
 
-class TrainingGame(Game):
-    def __init__(self, headless = True):
-        super().__init__()
-    def reset(self):
-        pass
-    def step(self):
-        pass
