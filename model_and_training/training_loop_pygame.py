@@ -4,9 +4,13 @@ import random
 n_epochs = 3
 steps_per_epoch = 500
 
-environment = TrainingGame(track="oval", n_cars = 8, render = True)
+environment = TrainingGame(n_cars = 8, render = True)
 
 for epoch in range(n_epochs):
+    if environment.track_name == "oval": 
+        environment.track_name = "stadium"
+    else: 
+        environment.track_name = "oval"
     environment.reset()
     for step in range(steps_per_epoch):
         observations = environment.observations

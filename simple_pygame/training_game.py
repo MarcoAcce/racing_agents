@@ -7,11 +7,12 @@ from .ai_car import AICar
 
 class TrainingGame(Game):
     def __init__(self, 
-            track = "stadium", 
+            track_choice = "stadium",
             n_cars: int = 2, 
             render: bool = False):
         super().__init__()
-        self.initialize_track(track)
+        self.track_name = track_choice
+        self.initialize_track(track_choice)
         for i in range(n_cars):
             self.register_player(human=False)
         self.render_enabled = render
@@ -22,6 +23,7 @@ class TrainingGame(Game):
 
     def reset(self):
         self.observations = []
+        self.initialize_track(track_choice = self.track_name)
         for player in self.players:
             self.reset_player(player.id)
             player.check_rays(self.track, max_length=300)
