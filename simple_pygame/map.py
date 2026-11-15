@@ -73,12 +73,12 @@ class Map():
         offset = player_offset
 
         if self.wall_mask.overlap(player_mask, offset) is not None:
-            pygame.event.post(pygame.event.Event(COLLISION))
+            pygame.event.post(pygame.event.Event(COLLISION, player_id=player_id))
        
         finish_hit = self.finish_mask.overlap(player_mask, offset) is not None
         if finish_hit and not player_state.on_finish:
             if len(player_state.passed_checkpoints) == len(self.checkpoint_masks):
-                pygame.event.post(pygame.event.Event(FINISH))
+                pygame.event.post(pygame.event.Event(FINISH, player_id=player_id))
                 player_state.passed_checkpoints.clear()
         player_state.on_finish = finish_hit
 
@@ -95,12 +95,12 @@ class Map():
                 if checkpoint_hit not in player_state.passed_checkpoints:
                     if checkpoint_hit==0 or checkpoint_hit - 1 in player_state.passed_checkpoints:
                         player_state.passed_checkpoints.append(checkpoint_hit)
-                        pygame.event.post(pygame.event.Event(CHECKPOINT, index=checkpoint_hit))
+                        pygame.event.post(pygame.event.Event(CHECKPOINT, player_id=player_id, index=checkpoint_hit))
                     else:
-                        pygame.event.post(pygame.event.Event(BACKWARDS, index=checkpoint_hit))
+                        pygame.event.post(pygame.event.Event(BACKWARDS, player_id=player_id, index=checkpoint_hit))
                 elif checkpoint_hit+1 in player_state.passed_checkpoints:
                     player_state.passed_checkpoints.remove(checkpoint_hit+1)
-                    pygame.event.post(pygame.event.Event(BACKWARDS, index=checkpoint_hit))
+                    pygame.event.post(pygame.event.Event(BACKWARDS, player_id=player_id, index=checkpoint_hit))
         else:
             player_state.on_checkpoint = None
 

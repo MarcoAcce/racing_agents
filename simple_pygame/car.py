@@ -8,8 +8,8 @@ class Car(pygame.sprite.Sprite):
         super().__init__()
 
         image = pygame.image.load('Car.png')
-        self.original_image = pygame.transform.scale(image, (60, 100))
-        self.image = self.original_image
+        Car.original_image = pygame.transform.scale(image, (60, 100))
+        self.image = Car.original_image
         self.rect = self.image.get_rect()
         self.x, self.y = 0, 0
         self.rect.center = (self.x, self.y)
@@ -23,7 +23,7 @@ class Car(pygame.sprite.Sprite):
             self.angle = self.angle - 360
         if self.angle < 0:
             self.angle = 360 + self.angle
-        self.image = pygame.transform.rotate(self.original_image,-self.angle)
+        self.image = pygame.transform.rotate(Car.original_image,-self.angle)
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect(center=self.rect.center)
 
