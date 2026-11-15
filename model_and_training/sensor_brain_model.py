@@ -30,13 +30,13 @@ class SensorBrain(nn.Module):
         return self.outLayer(t)
     
     @torch.no_grad()
-    def decide(self, sensors, speed)->int:
+    def decide(self, observations)->int:
         """ Decision action for the game.  
         INPUT: 13 sensors + speed
         9 possible actions (accelerate, brake, coast) X (right, left, no_turn)
         Returns the action index
         """
-        t = torch.as_tensor([*sensors, speed], dtype=torch.float32)
+        t = torch.as_tensor(observations dtype=torch.float32)
         return int(self.forward(t).argmax())
     
 if __name__ == '__main__':
