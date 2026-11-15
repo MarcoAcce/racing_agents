@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 import pygame
+from pathlib import Path
 
 COLLISION = pygame.USEREVENT + 1
 CHECKPOINT = pygame.USEREVENT + 2
@@ -23,26 +24,27 @@ class PlayerStats:
     on_finish: bool = False
     on_checkpoint: int = None
 
-maps = { 
-    "oval": Track("./tracks/oval/", Point(880, 400), 180),
-    "stadium" : Track("./tracks/stadium/", Point(350,170), 90),
- }
+TRACKS = Path(__file__).parent / "tracks"
+maps = {
+    "oval":    Track(TRACKS / "oval",    Point(880, 400), 180),
+    "stadium": Track(TRACKS / "stadium", Point(350, 170), 90),
+}
 
 class Map():
     def __init__(self, window, map_name = "stadium"):
         self.window = window
         self.name = map_name
         track_dir = maps[self.name].directory
-        self.track_surface = pygame.image.load(track_dir + "track.png").convert_alpha()
+        self.track_surface = pygame.image.load(track_dir / "track.png").convert_alpha()
         self.wall_mask = pygame.mask.from_surface(self.track_surface)
         self.map_size = self.wall_mask.get_size()
 
         #combined surface and mask for collective blit and check
-        self.checkpoint_surface = pygame.image.load(track_dir + "checkpoints.png").convert_alpha()
+        self.checkpoint_surface = pygame.image.load(track_dir / "checkpoints.png").convert_alpha()
         self.checkpoint_mask = pygame.mask.from_surface(self.checkpoint_surface)
 
         self.checkpoint_surfaces = [
-            pygame.image.load(track_dir + f"checkpoint_{i}.png").convert_alpha()
+            pygame.image.load(track_dir / f"checkpoint_{i}.png").convert_alpha()
             for i in range (1,11)
         ]
 
@@ -50,7 +52,7 @@ class Map():
             pygame.mask.from_surface(surface) for surface in self.checkpoint_surfaces
         ]
 
-        self.finish_surface = pygame.image.load(track_dir + "finish.png").convert_alpha()
+        self.finish_surface = pygame.image.load(track_dir / "finish.png").convert_alpha()
         self.finish_mask = pygame.mask.from_surface(self.finish_surface)
 
         self.players_state = {}

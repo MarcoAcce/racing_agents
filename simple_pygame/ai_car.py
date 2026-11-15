@@ -1,29 +1,20 @@
 import pygame
 import math
 from pygame import locals as pg
-from car import Car
-
+from .car import Car
+from .colors import red, white
 
 class AICar(Car):
     ray_angles = [-90,-60, -45, -25, -15, -7.5, 0, 7.5, 15, 25, 45, 60, 90]
     def __init__(self, in_id: int = -1):
         super().__init__(in_id)
         self.rays = []
+        self.ray_points = []
+        
     #def update(self):
     #    self.apply_controls(self.brain.decision(self.rays, self.speed, self.angle))
     #    self.rotation()
     #    self.movement()
-
-    def check_rays(self, track, draw = False, max_length = 300):
-        self.rays = []
-        collisions = []
-        for ray_angle in AICar.ray_angles:
-            ray_result = self.check_ray(track, max_length, ray_angle)
-            intensity = 1 - ray_result[0] / max_length
-            self.rays.append(intensity)     
-            if draw:
-                collisions.append([ray_result[1],ray_result[2]])
-        return collisions
 
     def check_ray(self, track,  max_length, ray_angle):
         length = 0
@@ -39,3 +30,18 @@ class AICar(Car):
 
         return length, x, y
 
+    def check_rays(self, track, draw = False, max_length = 300):
+        self.rays = []
+        self.ray_points = []
+        for ray_angle in AICar.ray_angles:
+            distance, x, y = self.check_ray(track, max_length, ray_angle)
+            intensity = 1 - distance / max_length
+            self.rays.append(intensity)
+            self.ray_points.append([x,y])     
+
+    def draw(self, surface, draw_rays = True):
+        super().draw(surface)
+        if draw_rays:
+            for point in self.ray_points:
+                pygame.draw.line(surface, white, self.rect.center, point, 1)
+                pygame.draw.circle(surface, red, point, 3)

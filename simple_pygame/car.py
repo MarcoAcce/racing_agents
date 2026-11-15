@@ -1,13 +1,14 @@
 import pygame
 import math
 from pygame import locals as pg
+from pathlib import Path
 
+ASSETS = Path(__file__).parent
 
 class Car(pygame.sprite.Sprite):
     def __init__(self, in_id: int = -1):
         super().__init__()
-
-        image = pygame.image.load('Car.png')
+        image = pygame.image.load(ASSETS / "Car.png")
         Car.original_image = pygame.transform.scale(image, (60, 100))
         self.image = Car.original_image
         self.rect = self.image.get_rect()

@@ -1,15 +1,13 @@
 import sys
 import pygame
 from pygame import locals as pg
-from car import Car
-from ai_player import AICar
-from map import Map, COLLISION, CHECKPOINT, FINISH, BACKWARDS
+from .car import Car
+from .ai_car import AICar
+from .map import Map, COLLISION, CHECKPOINT, FINISH, BACKWARDS
+from .colors import grey, red, white
 
 window_width = 1200
 window_height = 800
-white = pygame.Color(255, 255, 255)
-grey = pygame.Color(128, 128, 128)  
-red = pygame.Color(255, 0, 0)     
 
 class Game():
     def __init__(self):
@@ -20,7 +18,6 @@ class Game():
         self.display.fill(white)
         self.FPS = pygame.time.Clock()
         self.players = []
-        self.draw = True
     
     def initialize_track(self, track_choice):
         self.track = Map(self.display, track_choice)
@@ -41,25 +38,24 @@ class Game():
     
     def game_loop(self):
         while True:
-            self.display.fill(grey)
-            self.track.draw(self.display, red, 3)
-            ray_collisions = []
-            for player in self.players:
-                player.update()
-                self.track.check_position(player.id, player.mask, player.rect.topleft)
-                player.draw(self.display)
-                
-                if not isinstance(player, AICar):
-                    continue
-                ray_collisions = player.check_rays(self.track, True, 300)
-                if self.draw:
-                    for point in ray_collisions:
-                        pygame.draw.line(self.display, white, player.rect.center, point, 1)
-                        pygame.draw.circle(self.display, red, point, 3)
-
+            self.update()
             self.handle_events()
-            pygame.display.update()
+            self.render()
             self.FPS.tick(60)
+
+    def update(self):
+        for player in self.players:
+            player.update()
+            self.track.check_position(player.id, player.mask, player.rect.topleft)
+            if isinstance(player, AICar):
+                player.check_rays(self.track, True, 300)
+    
+    def render(self):
+        self.display.fill(grey)
+        self.track.draw(self.display, red, 3)
+        for player in self.players:
+            player.draw(self.display)
+        pygame.display.update()
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -85,15 +81,10 @@ class Game():
                 print(f"Player {event.player_id}: finished!")
                 player.reset_speed()
 
-if __name__ == "__main__":
-    while True:
-        choice = input("Choose a Map (oval, stadium):")
-        if choice in ("oval","stadium"):
-            break
-        print("wrong input")
-
-    game = Game()
-    game.initialize_track(choice)
-    game.register_player(human=True)
-    game.register_player()
-    game.start()
+class TrainingGame(Game):
+    def __init__(self, headless = True):
+        super().__init__()
+    def reset(self):
+        pass
+    def step(self):
+        pass
