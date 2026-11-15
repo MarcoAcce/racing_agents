@@ -1,6 +1,7 @@
 import sys
 import pygame
 from pygame import locals as pg
+import random
 from .car import Car
 from .ai_car import AICar
 from .map import Map, COLLISION, CHECKPOINT, FINISH, BACKWARDS
@@ -48,8 +49,8 @@ class Game():
             if isinstance(player, AICar):
                 player.check_rays(self.track, 300)
                 observations = player.get_observations()
-                #actions = ...
-                player.nex_action = action
+                #determine action from observations
+                player.nex_action = random.randrange(9)
             player.update()
             self.track.check_position(player.id, player.mask, player.rect.topleft)
     
@@ -66,13 +67,8 @@ class Game():
                 pygame.quit()
                 sys.exit()
             if event.type == COLLISION:
-                player = self.players[event.player_id]
                 print(f"Player {event.player_id} hit the wall")
-                player.reset_speed()
-                player.reset_angle()
-                player.set_position(*self.track.get_starting_position())
-                player.set_angle(self.track.get_starting_angle())
-                self.track.reset_player_state(event.player_id)
+                self.reset_player(event.player_id)
             if event.type == CHECKPOINT:
                 print(f"Player {event.player_id}: checkpoint {event.index +1}!")
             if event.type == BACKWARDS:
@@ -80,5 +76,12 @@ class Game():
             if event.type == FINISH:
                 player = self.players[event.player_id]
                 print(f"Player {event.player_id}: finished!")
-                player.reset_speed()
+                self.reset_player(event.player_id)
+
+    def reset_player(self, player_id):
+        player = self.players[player_id]
+        player.reset_speed()
+        player.set_position(*self.track.get_starting_position())
+        player.set_angle(self.track.get_starting_angle())
+        self.track.reset_player_state(player_id)
 
