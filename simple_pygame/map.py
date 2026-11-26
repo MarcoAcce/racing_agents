@@ -28,6 +28,7 @@ TRACKS = Path(__file__).parent / "tracks"
 maps = {
     "oval":    Track(TRACKS / "oval",    Point(880, 400), 180),
     "stadium": Track(TRACKS / "stadium", Point(350, 170), 90),
+    "monza":   Track(TRACKS / "monza",   Point(848, 696), 270),
 }
 
 class Map():

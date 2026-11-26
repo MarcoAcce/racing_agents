@@ -5,7 +5,7 @@ from .sensor_brain_model import SensorBrain
 
 CHECKPOINTS_DIR = Path(__file__).parent / "checkpoints" / "genetics"
 
-n_epochs = 3
+n_epochs = 15
 steps_per_epoch = 100
 n_cars = 20
 
@@ -83,3 +83,4 @@ if __name__ == "__main__":
         #mutations and new models
         save_models(models, [scores[pid] for pid in environment.players], generation)
         generation += 1
+        steps_per_epoch += 100
