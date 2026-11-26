@@ -28,7 +28,7 @@ class TrainingGame(Game):
         self.active_players = self.players.copy()
         for player in self.players.values():
             self.reset_player(player.id)
-            player.check_rays(self.track, max_length=300)
+            player.check_rays(self.track, max_length=500)
             self.observations[player.id] = player.get_observations()
 
     def step(self, actions):
@@ -40,8 +40,8 @@ class TrainingGame(Game):
             player.update()
             self.track.check_position(player.id, player.mask, player.rect.topleft)
             self.handle_events()
-            self.rewards[player.id] += self.still_penalty + self.speed_factor * player.speed
-            player.check_rays(self.track, max_length=300)
+            self.rewards[player.id] += self.still_penalty + self.speed_factor * player.speed / player.scale
+            player.check_rays(self.track, max_length=500)
             self.observations[player.id] = player.get_observations()
         self.steps += 1
         if self.render_enabled:

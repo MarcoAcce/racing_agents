@@ -21,15 +21,16 @@ class AICar(Car):
         self.movement()
     
     def get_observations(self):
-        return [*self.rays, self.speed/5]
+        return [*self.rays, self.speed/(5 * self.scale)]
 
     def check_ray(self, track,  max_length, ray_angle):
         length = 0
+        step = 3 * self.scale
         _sin = math.sin(math.radians(self.angle + ray_angle))
         _cos = math.cos(math.radians(self.angle + ray_angle))
 
         while length < max_length:
-            length += 1
+            length = min(length + step, max_length)
             x = self.x + _sin * length
             y = self.y - _cos * length
             if track.is_wall(x,y):
@@ -38,6 +39,8 @@ class AICar(Car):
         return length, x, y
 
     def check_rays(self, track, max_length):
+        """max_length is the sensor length of a full size car"""
+        max_length = max_length * self.scale
         self.rays = []
         self.ray_points = []
         for ray_angle in AICar.ray_angles:

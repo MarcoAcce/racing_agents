@@ -13,8 +13,8 @@ def random_car_sprite():
 class Car(pygame.sprite.Sprite):
     def __init__(self, in_id: int = -1):
         super().__init__()
-        image = pygame.image.load(random_car_sprite())
-        self.original_image = pygame.transform.scale(image, (60, 100))
+        self.base_image = pygame.image.load(random_car_sprite())
+        self.set_scale(1)
         self.image = self.original_image
         self.rect = self.image.get_rect()
         self.x, self.y = 0, 0
@@ -49,14 +49,21 @@ class Car(pygame.sprite.Sprite):
         self.movement()
 
     def apply_controls(self, accelerate = False, brake = False, left = False, right = False):
-        if accelerate: self.speed = min(self.speed + 0.1, 5)
-        if brake: self.speed = max(self.speed - 0.4, 0)
+        if accelerate: self.speed = min(self.speed + 0.1 * self.scale, 5 * self.scale)
+        if brake: self.speed = max(self.speed - 0.4 * self.scale, 0)
         if left: self.angle = self.angle - 5
         if right: self.angle = self.angle + 5
 
     def set_position(self, x = 160, y = 500):
         self.x, self.y = x, y
         self.rect.center = (x, y)
+
+    def set_scale(self, scale = 1):
+        """Resizes the car to the map's scale. Speeds and sensors scale with it."""
+        self.scale = scale
+        self.original_image = pygame.transform.smoothscale(
+            self.base_image, (round(60 * scale), round(100 * scale))
+        )
 
     def set_angle(self,angle=0):
         self.angle=angle

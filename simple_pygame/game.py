@@ -7,8 +7,8 @@ from .ai_car import AICar
 from .map import Map, COLLISION, CHECKPOINT, FINISH, BACKWARDS
 from .colors import grey, red, white
 
-window_width = 1200
-window_height = 800
+window_width = 1920
+window_height = 1080
 
 class Game():
     def __init__(self):
@@ -33,8 +33,7 @@ class Game():
     
     def start(self):
         for player in self.players.values():
-            player.set_position(*self.track.get_starting_position())
-            player.set_angle(self.track.get_starting_angle())
+            self.reset_player(player.id)
         self.game_loop()
     
     def game_loop(self):
@@ -47,7 +46,7 @@ class Game():
     def update(self):
         for player in self.players.values():
             if isinstance(player, AICar):
-                player.check_rays(self.track, 300)
+                player.check_rays(self.track, 500)
                 observations = player.get_observations()
                 #determine action from observations
                 player.nex_action = random.randrange(9)
@@ -81,6 +80,7 @@ class Game():
     def reset_player(self, player_id):
         player = self.players[player_id]
         player.reset_speed()
+        player.set_scale(self.track.scale)
         player.set_position(*self.track.get_starting_position())
         player.set_angle(self.track.get_starting_angle())
         self.track.reset_player_state(player_id)

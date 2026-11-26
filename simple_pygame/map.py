@@ -17,6 +17,7 @@ class Track:
     directory: str
     starting_point: Point
     starting_angle: int = 0
+    scale: float = 1.0      # car size on this map, 1 = full size car
 
 @dataclass
 class PlayerStats:
@@ -28,16 +29,17 @@ TRACKS = Path(__file__).parent / "tracks"
 
 class Map():
     maps = {
-        "oval":    Track(TRACKS / "oval",    Point(880, 400), 180),
-        "stadium": Track(TRACKS / "stadium", Point(350, 170), 90),
-        "monza":   Track(TRACKS / "monza",   Point(848, 696), 270),
-        "imola":   Track(TRACKS / "imola",   Point(853, 162), 265),
-        "mugello": Track(TRACKS / "mugello", Point(630, 388), 284),
+        "oval":    Track(TRACKS / "oval",    Point(1240, 540), 180),
+        "stadium": Track(TRACKS / "stadium", Point(710, 310),  90),
+        "monza":   Track(TRACKS / "monza",   Point(1270, 982), 265, scale=0.2),
+        "imola":   Track(TRACKS / "imola",   Point(1244, 184), 265, scale=0.2),
+        "mugello": Track(TRACKS / "mugello", Point(917, 556),  287, scale=0.2),
     }
 
     def __init__(self, window, map_name = "stadium"):
         self.window = window
         self.name = map_name
+        self.scale = self.maps[self.name].scale
         track_dir = self.maps[self.name].directory
         self.track_surface = pygame.image.load(track_dir / "track.png").convert_alpha()
         self.wall_mask = pygame.mask.from_surface(self.track_surface)
@@ -47,13 +49,10 @@ class Map():
         self.checkpoint_surface = pygame.image.load(track_dir / "checkpoints.png").convert_alpha()
         self.checkpoint_mask = pygame.mask.from_surface(self.checkpoint_surface)
 
-        self.checkpoint_surfaces = [
-            pygame.image.load(track_dir / f"checkpoint_{i}.png").convert_alpha()
-            for i in range (1,11)
-        ]
-
+        n_checkpoints = len(list(track_dir.glob("checkpoint_*.png")))
         self.checkpoint_masks = [
-            pygame.mask.from_surface(surface) for surface in self.checkpoint_surfaces
+            pygame.mask.from_surface(pygame.image.load(track_dir / f"checkpoint_{i}.png").convert_alpha())
+            for i in range (1, n_checkpoints + 1)
         ]
 
         self.finish_surface = pygame.image.load(track_dir / "finish.png").convert_alpha()
