@@ -9,7 +9,7 @@ The game is a simple racing game in Pygame. The maps are hand-drawn PNGs, from w
 
 Collisions with the walls result in a reset.
 
-![A car driving a lap of the oval track](media/human_oval.gif)
+![A car driving a lap of the stadium track](media/human_stadium.gif)
 
 ### Checkpoints
 
@@ -30,7 +30,7 @@ The sensor output is an "intensity" that decreases linearly, from 1 to 0, with t
 
 The sensors are evaluated with a naive algorithm that simply checks all positions in a straight line at fixed angles from the car's center. I decided against optimizing to preserve the scope of the project.
 
-![An AI car on Monza with its sensors and the checkpoints drawn](media/sensors_monza.gif)
+![An AI car on the stadium track with its sensors and the checkpoints drawn](media/sensors_stadium.gif)
 
 ## Training
 
@@ -43,3 +43,5 @@ A step consists of:
 ### Genetic
 
 ### Reinforcement
+
+![A small car driving a lap of Monza](media/monza.gif)
