@@ -42,6 +42,20 @@ A step consists of:
 
 ### Genetic
 
+I implemented a simple genetic algorithm that simply had a fixed number of cars, each controlled by a small fully connected model, drive all track in succession. 
+The car could only drive for a set number of step before going to the next track, passing checkpoints or the finish line would earn them rewards but going backwards, crashing or simply standing still would lose them points instead.
+At the end of each epoch the best scoring models would remain unchanged, and the worst scoring would be replaced by mutated copies of the best models.
+In doing so each generation would consistently score better than the previous.
+
+![A later generation driving through a simple track](media/sensor_genetics_final_gen_stadium.gif)
+
+By gradually increasing the number of steps the model could take on a single track they learnt to speed to through shorter tracks and slowly learnt how to navigate the longer and more complex tracks.
+
+It only took 45 generations to create models capable of driving through all tracks much better than me.
+
+![An ai controller car driving a lap of Monza](media/monza.gif)
+
 ### Reinforcement
 
-![A small car driving a lap of Monza](media/monza.gif)
+tbd
+
