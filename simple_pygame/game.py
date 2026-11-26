@@ -16,10 +16,18 @@ class Game():
         self.display = pygame.display.set_mode((window_width, 
                                         window_height))
         pygame.display.set_caption("racing game")
-        self.display.fill(white)
+        self.show_loading_screen()
         self.FPS = pygame.time.Clock()
         self.players = {}
-    
+
+    def show_loading_screen(self):
+        """Shown until the first render, while the track loads"""
+        self.display.fill(grey)
+        font = pygame.font.Font(None, 200)
+        text = font.render("LOADING", True, white)
+        self.display.blit(text, text.get_rect(center=self.display.get_rect().center))
+        pygame.display.update()
+
     def initialize_track(self, track_choice):
         self.track = Map(self.display, track_choice)
 
