@@ -36,7 +36,7 @@ class SensorBrain(nn.Module):
         9 possible actions (accelerate, brake, coast) X (right, left, no_turn)
         Returns the action index
         """
-        t = torch.as_tensor(observations dtype=torch.float32)
+        t = torch.as_tensor(observations, dtype=torch.float32)
         return int(self.forward(t).argmax())
     
 if __name__ == '__main__':

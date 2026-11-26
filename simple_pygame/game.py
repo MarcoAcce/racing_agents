@@ -18,7 +18,7 @@ class Game():
         pygame.display.set_caption("racing game")
         self.display.fill(white)
         self.FPS = pygame.time.Clock()
-        self.players = []
+        self.players = {}
     
     def initialize_track(self, track_choice):
         self.track = Map(self.display, track_choice)
@@ -28,11 +28,11 @@ class Game():
             player = Car(len(self.players))
         else:
             player = AICar(len(self.players))
-        self.players.append(player)
+        self.players[player.id]=player
         self.track.register_player(player)
     
     def start(self):
-        for player in self.players:
+        for player in self.players.values():
             player.set_position(*self.track.get_starting_position())
             player.set_angle(self.track.get_starting_angle())
         self.game_loop()
@@ -45,7 +45,7 @@ class Game():
             self.FPS.tick(60)
 
     def update(self):
-        for player in self.players:
+        for player in self.players.values():
             if isinstance(player, AICar):
                 player.check_rays(self.track, 300)
                 observations = player.get_observations()
@@ -57,7 +57,7 @@ class Game():
     def render(self):
         self.display.fill(grey)
         self.track.draw(self.display, red, 3)
-        for player in self.players:
+        for player in self.players.values():
             player.draw(self.display)
         pygame.display.update()
 
