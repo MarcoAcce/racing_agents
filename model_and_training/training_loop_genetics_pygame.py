@@ -45,8 +45,8 @@ def reset_env(environment):
     environment.reset()
     
 
-def single_game(environment):
-    for step in range(steps_per_epoch):
+def single_game(environment, steps):
+    for step in range(steps):
         observations = environment.observations
         actions = [ brains[player.id].decide(observations[player.id]) 
             for player in environment.active_players.values()
@@ -71,15 +71,17 @@ if __name__ == "__main__":
         scores = {pid : 0  for pid in environment.players}
         for _ in range(len(Map.maps)):
             reset_env(environment)
+            # smaller cars are slower, so they get more steps on the same map
+            steps = int(steps_per_epoch / environment.track.scale)
             environment.set_rewards(
-                crash_rw = -steps_per_epoch * 0.3, 
-                checkpoint_rw = 3, 
-                backwards_rw = -3, 
-                finish_rw = steps_per_epoch * 0.1,
+                crash_rw = -steps * 0.3,
+                checkpoint_rw = 3,
+                backwards_rw = -3,
+                finish_rw = steps * 0.1,
                 still_penalty = -0.1,
                 speed_factor = 0.02
             )
-            single_game(environment)
+            single_game(environment, steps)
         #keep only the 10 best models, kepts as is
         #random mutations to the 10 best models to have a new set of 20
         #mutations and new models
