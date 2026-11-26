@@ -1,6 +1,7 @@
 from pathlib import Path
 import torch
 from simple_pygame import TrainingGame
+from simple_pygame.map import Map
 from .sensor_brain_model import SensorBrain
 
 CHECKPOINTS_DIR = Path(__file__).parent / "checkpoints" / "genetics"
@@ -37,10 +38,10 @@ def save_models(models, scores, generation):
     torch.save([model.state_dict() for _, model in ranked], path)
 
 def reset_env(environment):
-    if environment.track_name == "oval": 
-        environment.track_name = "stadium"
-    else: 
-        environment.track_name = "oval"
+    """Switches the environment to the next map and resets it."""
+    map_names = list(Map.maps)
+    current = map_names.index(environment.track_name)
+    environment.track_name = map_names[(current + 1) % len(map_names)]
     environment.reset()
     
 
@@ -68,8 +69,9 @@ if __name__ == "__main__":
         brains[player.id] = models[i]
     for epoch in range(n_epochs):
         scores = {pid : 0  for pid in environment.players}
-        for _ in range(2):
-            reset_env(environment)environment.set_rewards(
+        for _ in range(len(Map.maps)):
+            reset_env(environment)
+            environment.set_rewards(
                 crash_rw = -steps_per_epoch * 0.3, 
                 checkpoint_rw = 3, 
                 backwards_rw = -3, 

@@ -25,17 +25,18 @@ class PlayerStats:
     on_checkpoint: int = None
 
 TRACKS = Path(__file__).parent / "tracks"
-maps = {
-    "oval":    Track(TRACKS / "oval",    Point(880, 400), 180),
-    "stadium": Track(TRACKS / "stadium", Point(350, 170), 90),
-    "monza":   Track(TRACKS / "monza",   Point(848, 696), 270),
-}
 
 class Map():
+    maps = {
+        "oval":    Track(TRACKS / "oval",    Point(880, 400), 180),
+        "stadium": Track(TRACKS / "stadium", Point(350, 170), 90),
+        "monza":   Track(TRACKS / "monza",   Point(848, 696), 270),
+    }
+
     def __init__(self, window, map_name = "stadium"):
         self.window = window
         self.name = map_name
-        track_dir = maps[self.name].directory
+        track_dir = self.maps[self.name].directory
         self.track_surface = pygame.image.load(track_dir / "track.png").convert_alpha()
         self.wall_mask = pygame.mask.from_surface(self.track_surface)
         self.map_size = self.wall_mask.get_size()
@@ -65,11 +66,11 @@ class Map():
         self.players_state[player_id] = PlayerStats()
 
     def get_starting_position(self):
-        start = maps[self.name].starting_point
+        start = self.maps[self.name].starting_point
         return start.x, start.y
-    
+
     def get_starting_angle(self):
-        return maps[self.name].starting_angle
+        return self.maps[self.name].starting_angle
     
     def check_position(self, player_id, player_mask, player_offset):
         player_state = self.players_state[player_id]

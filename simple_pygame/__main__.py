@@ -1,8 +1,9 @@
 from .game import Game
+from .map import Map
 
 while True:
-    map_choice = input("Choose a Map (oval, stadium):")
-    if map_choice in ("oval","stadium"):
+    map_choice = input(f"Choose a Map ({', '.join(Map.maps)}):")
+    if map_choice in Map.maps:
         break
     print("wrong input")
 game = Game()
