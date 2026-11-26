@@ -13,6 +13,7 @@ class TrainingGame(Game):
         super().__init__()
         self.track_name = track_choice
         self.initialize_track(track_choice)
+        self.tracks = {track_choice: self.track}    # one loaded Map per visited track
         for i in range(n_cars):
             self.register_player(human=False)
         self.render_enabled = render
@@ -24,7 +25,10 @@ class TrainingGame(Game):
 
     def reset(self):
         self.observations = {}
-        self.initialize_track(track_choice = self.track_name)
+        if self.track_name not in self.tracks:
+            self.initialize_track(track_choice = self.track_name)
+            self.tracks[self.track_name] = self.track
+        self.track = self.tracks[self.track_name]
         self.active_players = self.players.copy()
         for player in self.players.values():
             self.reset_player(player.id)
