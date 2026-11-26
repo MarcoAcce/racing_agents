@@ -31,6 +31,8 @@ class Map():
         "oval":    Track(TRACKS / "oval",    Point(880, 400), 180),
         "stadium": Track(TRACKS / "stadium", Point(350, 170), 90),
         "monza":   Track(TRACKS / "monza",   Point(848, 696), 270),
+        "imola":   Track(TRACKS / "imola",   Point(853, 162), 265),
+        "mugello": Track(TRACKS / "mugello", Point(630, 388), 284),
     }
 
     def __init__(self, window, map_name = "stadium"):
