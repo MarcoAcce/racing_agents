@@ -88,7 +88,7 @@ class Game():
                 print(f"Player {event.player_id}: going backwards through {event.index +1}!")
             if event.type == FINISH:
                 player = self.players[event.player_id]
-                print(f"Player {event.player_id}: finished!")
+                #print(f"Player {event.player_id}: finished!")
                 self.reset_player(event.player_id)
 
     def reset_player(self, player_id):

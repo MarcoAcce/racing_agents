@@ -75,10 +75,10 @@ def single_game(environment, steps):
         for player in list(environment.active_players.values()):
             reward = rewards[player.id]
             scores[player.id] += reward
-            if dones[player.id]:
+            if player.id in dones and dones[player.id]:  # crashed
                 environment.remove_player(player.id)
         observations = new_observations
-        if list(dones.values()).count(True) == len(dones):
+        if not environment.active_players:
             break
 
 if __name__ == "__main__":
@@ -151,4 +151,4 @@ if __name__ == "__main__":
         brains = {pid: models[i] for i, pid in enumerate(environment.players)}
         generation += 1
         if increase_steps:
-            steps_per_epoch += 10
+            steps_per_epoch += 50

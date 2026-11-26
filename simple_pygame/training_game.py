@@ -52,8 +52,8 @@ class TrainingGame(Game):
 
     def step(self, actions):
         self.observations = {}
+        self.dones = {}
         for player, action in zip(self.active_players.values(), actions):
-            self.dones[player.id] = False
             self.rewards[player.id] = 0
             player.nex_action = action
             player.update()
@@ -81,8 +81,7 @@ class TrainingGame(Game):
                 self.rewards[event.player_id] += self.backwards_rw
             if event.type == FINISH:
                 self.rewards[event.player_id] += self.finish_rw
-                self.reset_player(event.player_id)            
-                self.dones[event.player_id] = True
+                self.dones[event.player_id] = False
 
     def remove_player(self, player_id):
         self.active_players.pop(player_id, None)
