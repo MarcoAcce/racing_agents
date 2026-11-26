@@ -4,6 +4,7 @@ from pygame import locals as pg
 from .map import COLLISION, CHECKPOINT, FINISH, BACKWARDS
 from .game import Game
 from .ai_car import AICar
+from .colors import grey, white
 
 class TrainingGame(Game):
     def __init__(self, 
@@ -13,7 +14,7 @@ class TrainingGame(Game):
         super().__init__()
         self.track_name = track_choice
         self.initialize_track(track_choice)
-        self.tracks = {track_choice: self.track}    # one loaded Map per visited track
+        self.tracks = {track_choice: self.track}
         for i in range(n_cars):
             self.register_player(human=False)
         self.render_enabled = render
@@ -22,6 +23,8 @@ class TrainingGame(Game):
         self.dones = {}
         self.active_players = {}
         self.steps = 0
+        self.text_lines = []
+        self.font = pygame.font.Font(None, 40)
 
     def reset(self):
         self.observations = {}
@@ -34,6 +37,18 @@ class TrainingGame(Game):
             self.reset_player(player.id)
             player.check_rays(self.track, max_length=500)
             self.observations[player.id] = player.get_observations()
+
+    def render(self, players_to_draw = None):
+        super().render(players_to_draw)
+        self.draw_text()
+        pygame.display.update()
+
+    def show_text(self, lines):
+        self.text_lines = lines
+        if not self.render_enabled:
+            self.display.fill(grey)
+            self.draw_text()
+            pygame.display.update()
 
     def step(self, actions):
         self.observations = {}
@@ -49,7 +64,7 @@ class TrainingGame(Game):
             self.observations[player.id] = player.get_observations()
         self.steps += 1
         if self.render_enabled:
-            self.render()
+            self.render(self.active_players)
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -73,7 +88,15 @@ class TrainingGame(Game):
         self.active_players.pop(player_id, None)
         self.rewards.pop(player_id, None)
         self.dones.pop(player_id, None)
-    
+
+    def draw_text(self):
+        y = self.display.get_height() - 20
+        for line in reversed(self.text_lines):
+            text = self.font.render(line, True, white)
+            y -= text.get_height()
+            self.display.blit(text, (20, y))
+            y -= 5
+
     def set_rewards(self, crash_rw = -50, checkpoint_rw = 3, 
     backwards_rw = -3, finish_rw = 50, still_penalty = -0.1, speed_factor = 0.01):
         self.crash_rw = crash_rw
