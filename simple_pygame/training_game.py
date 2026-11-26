@@ -4,7 +4,7 @@ from pygame import locals as pg
 from .map import COLLISION, CHECKPOINT, FINISH, BACKWARDS
 from .game import Game
 from .ai_car import AICar
-from .colors import grey, white
+from .colors import grey
 
 class TrainingGame(Game):
     def __init__(self, 
@@ -23,8 +23,6 @@ class TrainingGame(Game):
         self.dones = {}
         self.active_players = {}
         self.steps = 0
-        self.text_lines = []
-        self.font = pygame.font.Font(None, 40)
 
     def reset(self):
         self.observations = {}
@@ -37,11 +35,6 @@ class TrainingGame(Game):
             self.reset_player(player.id)
             player.check_rays(self.track, max_length=500)
             self.observations[player.id] = player.get_observations()
-
-    def render(self, players_to_draw = None):
-        self.draw_frame(players_to_draw)
-        self.draw_text()
-        pygame.display.update()
 
     def show_text(self, lines):
         self.text_lines = lines
@@ -87,14 +80,6 @@ class TrainingGame(Game):
         self.active_players.pop(player_id, None)
         self.rewards.pop(player_id, None)
         self.dones.pop(player_id, None)
-
-    def draw_text(self):
-        y = self.display.get_height() - 20
-        for line in reversed(self.text_lines):
-            text = self.font.render(line, True, white)
-            y -= text.get_height()
-            self.display.blit(text, (20, y))
-            y -= 5
 
     def set_rewards(self, crash_rw = -50, checkpoint_rw = 3, 
     backwards_rw = -3, finish_rw = 50, still_penalty = -0.1, speed_factor = 0.01):

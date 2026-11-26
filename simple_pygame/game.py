@@ -19,9 +19,11 @@ class Game():
         self.show_loading_screen()
         self.FPS = pygame.time.Clock()
         self.players = {}
+        self.text_lines = []
+        self.font = pygame.font.Font(None, 40)
+        self.legend = None  
 
     def show_loading_screen(self):
-        """Shown until the first render, while the track loads"""
         self.display.fill(grey)
         font = pygame.font.Font(None, 200)
         text = font.render("LOADING", True, white)
@@ -56,13 +58,19 @@ class Game():
             if isinstance(player, AICar):
                 player.check_rays(self.track, 500)
                 observations = player.get_observations()
-                #determine action from observations
-                player.nex_action = random.randrange(9)
+                player.nex_action = self.get_action(observations)
             player.update()
             self.track.check_position(player.id, player.mask, player.rect.topleft)
-    
+
+    def get_action(self, observations):
+        """Action of an AI car for this tick, random unless replaced by a brain"""
+        return random.randrange(9)
+
     def render(self, players_to_draw = None):
         self.draw_frame(players_to_draw)
+        self.draw_text()
+        if self.legend is not None:
+            self.display.blit(self.legend, self.legend.get_rect(topright=(window_width - 20, 20)))
         pygame.display.update()
 
     def draw_frame(self, players_to_draw = None):
@@ -73,6 +81,13 @@ class Game():
         for player in players_to_draw.values():
             player.draw(self.display)
 
+    def draw_text(self):
+        y = self.display.get_height() - 20
+        for line in reversed(self.text_lines):
+            text = self.font.render(line, True, white)
+            y -= text.get_height()
+            self.display.blit(text, (20, y))
+            y -= 5
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -80,16 +95,18 @@ class Game():
                 pygame.quit()
                 sys.exit()
             if event.type == COLLISION:
-                print(f"Player {event.player_id} hit the wall")
+                name = "AI" if isinstance(self.players[event.player_id], AICar) else "Player"
+                self.text_lines.append(f"{name} hit the wall")
+                self.text_lines = self.text_lines[-3:]  # only the last 3 messages
                 self.reset_player(event.player_id)
             if event.type == CHECKPOINT:
-                print(f"Player {event.player_id}: checkpoint {event.index +1}!")
+                pass
             if event.type == BACKWARDS:
-                print(f"Player {event.player_id}: going backwards through {event.index +1}!")
+                pass
             if event.type == FINISH:
-                player = self.players[event.player_id]
-                #print(f"Player {event.player_id}: finished!")
-                self.reset_player(event.player_id)
+                name = "AI" if isinstance(self.players[event.player_id], AICar) else "Player"
+                self.text_lines.append(f"{name} finished a lap")
+                self.text_lines = self.text_lines[-3:]  # only the last 3 messages
 
     def reset_player(self, player_id):
         player = self.players[player_id]
