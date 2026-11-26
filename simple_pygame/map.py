@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+import json
 import pygame
 from pathlib import Path
 
@@ -28,12 +29,11 @@ class PlayerStats:
 TRACKS = Path(__file__).parent / "tracks"
 
 class Map():
+    # every track in tracks/track.json, in the file's order
     maps = {
-        "stadium": Track(TRACKS / "stadium", Point(710, 310),  90),
-        "oval":    Track(TRACKS / "oval",    Point(1240, 540), 180),
-        "monza":   Track(TRACKS / "monza",   Point(1270, 982), 265, scale=0.2),
-        "imola":   Track(TRACKS / "imola",   Point(1244, 184), 265, scale=0.2),
-        "mugello": Track(TRACKS / "mugello", Point(917, 556),  287, scale=0.2),
+        track["name"]: Track(TRACKS / track["name"], Point(**track["starting_point"]),
+                             track["starting_angle"], track["scale"])
+        for track in json.loads((TRACKS / "track.json").read_text())
     }
 
     def __init__(self, window, map_name = "stadium"):

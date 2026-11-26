@@ -1,0 +1,7 @@
+[
+    {"name": "stadium", "starting_point": {"x": 710,  "y": 310}, "starting_angle": 90,  "scale": 1.0},
+    {"name": "oval",    "starting_point": {"x": 1240, "y": 540}, "starting_angle": 180, "scale": 1.0},
+    {"name": "monza",   "starting_point": {"x": 1270, "y": 982}, "starting_angle": 265, "scale": 0.2},
+    {"name": "imola",   "starting_point": {"x": 1244, "y": 184}, "starting_angle": 265, "scale": 0.2},
+    {"name": "mugello", "starting_point": {"x": 917,  "y": 556}, "starting_angle": 287, "scale": 0.2}
+]
