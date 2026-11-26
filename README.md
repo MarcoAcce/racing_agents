@@ -9,6 +9,8 @@ The game is a simple racing game in Pygame. The maps are hand-drawn PNGs, from w
 
 Collisions with the walls result in a reset.
 
+![A car driving a lap of the oval track](media/human_oval.gif)
+
 ### Checkpoints
 
 Checkpoints are invisible lines drawn on the map at regular intervals.
@@ -27,6 +29,8 @@ Cars controlled by the model have a set of sensors: these sensors simply determi
 The sensor output is an "intensity" that decreases linearly, from 1 to 0, with the distance up to a maximum distance, where it reaches 0.
 
 The sensors are evaluated with a naive algorithm that simply checks all positions in a straight line at fixed angles from the car's center. I decided against optimizing to preserve the scope of the project.
+
+![An AI car on Monza with its sensors and the checkpoints drawn](media/sensors_monza.gif)
 
 ## Training
 
