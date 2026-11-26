@@ -21,7 +21,7 @@ class AICar(Car):
         self.movement()
     
     def get_observations(self):
-        return [*self.rays, self.speed/(5 * self.scale)]
+        return [*self.rays, self.speed/(Car.top_speed * self.scale)]
 
     def check_ray(self, track,  max_length, ray_angle):
         length = 0

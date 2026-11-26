@@ -11,6 +11,8 @@ def random_car_sprite():
     return random.choice(sorted(CAR_SPRITES.glob("*.png")))
 
 class Car(pygame.sprite.Sprite):
+    top_speed:int = 15
+
     def __init__(self, in_id: int = -1):
         super().__init__()
         self.base_image = pygame.image.load(random_car_sprite())
@@ -49,7 +51,10 @@ class Car(pygame.sprite.Sprite):
         self.movement()
 
     def apply_controls(self, accelerate = False, brake = False, left = False, right = False):
-        if accelerate: self.speed = min(self.speed + 0.1 * self.scale, 5 * self.scale)
+        if accelerate: self.speed = min(
+            self.speed + 0.1 * self.scale, 
+            Car.top_speed * self.scale
+        )
         if brake: self.speed = max(self.speed - 0.4 * self.scale, 0)
         if left: self.angle = self.angle - 5
         if right: self.angle = self.angle + 5
