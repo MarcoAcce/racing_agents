@@ -50,7 +50,7 @@ class Car(pygame.sprite.Sprite):
 
     def apply_controls(self, accelerate = False, brake = False, left = False, right = False):
         if accelerate: self.speed = min(self.speed + 0.1, 5)
-        if brake: self.speed = max(self.speed - 0.1, 0)
+        if brake: self.speed = max(self.speed - 0.4, 0)
         if left: self.angle = self.angle - 5
         if right: self.angle = self.angle + 5
 
