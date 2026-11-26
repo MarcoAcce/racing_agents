@@ -39,7 +39,7 @@ class TrainingGame(Game):
             self.observations[player.id] = player.get_observations()
 
     def render(self, players_to_draw = None):
-        super().render(players_to_draw)
+        self.draw_frame(players_to_draw)
         self.draw_text()
         pygame.display.update()
 

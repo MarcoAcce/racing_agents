@@ -62,13 +62,16 @@ class Game():
             self.track.check_position(player.id, player.mask, player.rect.topleft)
     
     def render(self, players_to_draw = None):
+        self.draw_frame(players_to_draw)
+        pygame.display.update()
+
+    def draw_frame(self, players_to_draw = None):
         if players_to_draw == None:
             players_to_draw = self.players
         self.display.fill(grey)
         self.track.draw(self.display, red, 3)
         for player in players_to_draw.values():
             player.draw(self.display)
-        pygame.display.update()
 
 
     def handle_events(self):
