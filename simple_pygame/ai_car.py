@@ -49,7 +49,7 @@ class AICar(Car):
             self.rays.append(intensity)
             self.ray_points.append([x,y])     
 
-    def draw(self, surface, draw_rays = True):
+    def draw(self, surface, draw_rays = False):
         super().draw(surface)
         if draw_rays:
             for point in self.ray_points:
